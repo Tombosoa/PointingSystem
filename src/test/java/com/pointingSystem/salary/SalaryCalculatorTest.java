@@ -65,7 +65,7 @@ public class SalaryCalculatorTest {
         var the_26_mai = LocalDate.of(2024, 5, 26);
         var the_06_july = LocalDate.of(2024, 7, 6);
 
-        var totalHours = SalaryCalculator.calculateTotalHour(the_26_mai, the_06_july,calendar,employee);
+        var totalHours = SalaryCalculator.calculateTotalHour(the_26_mai, the_06_july,calendar);
 
         Assertions.assertEquals(420, totalHours);
     }
@@ -83,7 +83,7 @@ public class SalaryCalculatorTest {
         var the_26_mai = LocalDate.of(2024, 5, 26);
         var the_06_july = LocalDate.of(2024, 7, 6);
 
-        var totalHours = SalaryCalculator.calculateTotalHour(the_26_mai, the_06_july,calendar,employee);
+        var totalHours = SalaryCalculator.calculateTotalHour(the_26_mai, the_06_july,calendar);
 
         Assertions.assertEquals(588, totalHours);
     }

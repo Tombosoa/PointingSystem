@@ -3,7 +3,6 @@ package com.pointingSystem.calendar;
 import com.pointingSystem.calendar.day.Day;
 import com.pointingSystem.calendar.hour.Hour;
 import com.pointingSystem.enums.DayType;
-import com.pointingSystem.enums.HourType;
 
 import java.time.LocalDate;
 import java.util.ArrayList;

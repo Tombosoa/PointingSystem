@@ -50,7 +50,7 @@ public class SalaryCalculator {
         return Math.round(totalSalary * 100.0) / 100.0;
     }
 
-    public static int calculateTotalHour(LocalDate startDate, LocalDate endDate, Calendar calendar, Employee employee){
+    public static int calculateTotalHour(LocalDate startDate, LocalDate endDate, Calendar calendar){
         List<Day> givenDays = calendar.getDatesBetween(startDate, endDate);
         return givenDays.stream()
                 .mapToInt(Day::totalHour)
