@@ -56,4 +56,11 @@ public class SalaryCalculator {
                 .mapToInt(Day::totalHour)
                 .sum();
     }
+
+    public static Salary getSalary(LocalDate startDate, LocalDate endDate, Calendar calendar, Employee employee, int normalDaysWork){
+        Salary salary = new Salary();
+        double salaryByDate = calculateSalaryBetweenDates(startDate, endDate, calendar, employee,  normalDaysWork);
+        salary.setGrossSalary(salaryByDate);
+        return salary;
+    }
 }

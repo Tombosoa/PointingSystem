@@ -1,10 +1,12 @@
 package com.pointingSystem.salary;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.*;
 
 @Getter
+@Setter
 @AllArgsConstructor
+@ToString
+@NoArgsConstructor
 public class Salary {
     private double grossSalary;
 

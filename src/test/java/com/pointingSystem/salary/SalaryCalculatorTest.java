@@ -143,4 +143,104 @@ public class SalaryCalculatorTest {
 
         Assertions.assertEquals(807857.14, totalSalary);
     }
+
+    @Test
+    public void rakoto_increased_hour(){
+        var salary = new Salary(100000);
+        var employee = new Employee("Rakoto", "rakoto", EmployeeType.guard, salary);
+
+        List<Day> customDays = new ArrayList<>();
+        var the_26_june = new Day(new Hour(HourType.increased, 10), new Hour(HourType.normal, 0), DayType.holiday, LocalDate.of(2024, 6, 26));
+
+        customDays.add(the_26_june);
+
+        var defaultDayHour = new Hour(HourType.normal, 0);
+        var defaultNightHour = new Hour(HourType.normal, 14);
+
+        var calendar = new Calendar(defaultDayHour, defaultNightHour, true);
+        calendar.addCustomDays(customDays);
+
+        var the_26_mai = LocalDate.of(2024, 5, 26);
+        var the_06_july = LocalDate.of(2024, 7, 6);
+
+        var cal = calendar.getDatesBetween(the_26_mai, the_06_july);
+
+        Assertions.assertEquals(10, calendar.totalIncreasedHour(cal));
+        Assertions.assertEquals(0, calendar.totalAdditionalHour(cal));
+    }
+
+    @Test
+    public void rabe_increased_hour(){
+        var salary = new Salary(100000);
+        var employee = new Employee("Rabe", "rabe", EmployeeType.guard, salary);
+
+        List<Day> customDays = new ArrayList<>();
+        var the_26_june = new Day(new Hour(HourType.normal, 0), new Hour(HourType.increased, 14), DayType.holiday, LocalDate.of(2024, 6, 26));
+
+        customDays.add(the_26_june);
+
+        var defaultDayHour = new Hour(HourType.normal, 0);
+        var defaultNightHour = new Hour(HourType.increased, 14);
+
+        var calendar = new Calendar(defaultDayHour, defaultNightHour, true);
+        calendar.addCustomDays(customDays);
+
+        var the_26_mai = LocalDate.of(2024, 5, 26);
+        var the_06_july = LocalDate.of(2024, 7, 6);
+
+        var cal = calendar.getDatesBetween(the_26_mai, the_06_july);
+
+        Assertions.assertEquals(588, calendar.totalIncreasedHour(cal));
+        Assertions.assertEquals(0, calendar.totalAdditionalHour(cal));
+    }
+
+    @Test
+    public void rakoto_guard_salary_with_one_custom_days(){
+        var salary = new Salary(100000);
+        var employee = new Employee("Rakoto", "rakoto", EmployeeType.guard, salary);
+
+        List<Day> customDays = new ArrayList<>();
+       var the_26_june = new Day(new Hour(HourType.normal, 10), new Hour(HourType.normal, 0), DayType.holiday, LocalDate.of(2024, 6, 26));
+
+        customDays.add(the_26_june);
+
+        var defaultDayHour = new Hour(HourType.normal, 10);
+        var defaultNightHour = new Hour(HourType.normal, 0);
+
+        var calendar = new Calendar(defaultDayHour, defaultNightHour, true);
+        calendar.addCustomDays(customDays);
+
+        var the_26_mai = LocalDate.of(2024, 5, 26);
+        var the_06_july = LocalDate.of(2024, 7, 6);
+
+        var resp = SalaryCalculator.getSalary(the_26_mai, the_06_july, calendar, employee, 7);
+
+        Assertions.assertEquals(607142.86, resp.getGrossSalary());
+        Assertions.assertEquals(485714.288, resp.getNetSalary());
+    }
+
+    @Test
+    public void rabe_guard_salary_with_one_custom_days(){
+        var salary = new Salary(100000);
+        var employee = new Employee("Rabe", "rabe", EmployeeType.guard, salary);
+
+        List<Day> customDays = new ArrayList<>();
+        var the_26_june = new Day(new Hour(HourType.normal, 0), new Hour(HourType.increased, 14), DayType.holiday, LocalDate.of(2024, 6, 26));
+
+        customDays.add(the_26_june);
+
+        var defaultDayHour = new Hour(HourType.normal, 0);
+        var defaultNightHour = new Hour(HourType.increased, 14);
+
+        var calendar = new Calendar(defaultDayHour, defaultNightHour, true);
+        calendar.addCustomDays(customDays);
+
+        var the_26_mai = LocalDate.of(2024, 5, 26);
+        var the_06_july = LocalDate.of(2024, 7, 6);
+
+        var resp = SalaryCalculator.getSalary(the_26_mai, the_06_july, calendar, employee, 7);
+
+        Assertions.assertEquals(789285.71, resp.getGrossSalary());
+        Assertions.assertEquals(631428.568, resp.getNetSalary());
+    }
 }

@@ -3,6 +3,7 @@ package com.pointingSystem.calendar;
 import com.pointingSystem.calendar.day.Day;
 import com.pointingSystem.calendar.hour.Hour;
 import com.pointingSystem.enums.DayType;
+import com.pointingSystem.enums.HourType;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -76,4 +77,31 @@ public class Calendar {
 
         return getDatesBetween(startDate, endDate);
     }
+
+    public int totalAdditionalHour(List<Day> days){
+        int additionalDayHour = days.stream()
+                .filter(d->d.getDayHour().getType() == HourType.additional)
+                .mapToInt(d->d.getDayHour().getValue())
+                .sum();
+        int additionalNightHour = days.stream()
+                .filter(d->d.getNightHour().getType() == HourType.additional)
+                .mapToInt(d->d.getNightHour().getValue())
+                .sum();
+
+        return additionalDayHour + additionalNightHour;
+    }
+
+    public int totalIncreasedHour(List<Day> days){
+        int increasedDayHour = days.stream()
+                .filter(d->d.getDayHour().getType() == HourType.increased)
+                .mapToInt(Day::totalHour)
+                .sum();
+        int increasedNightHour = days.stream()
+                .filter(d->d.getNightHour().getType() == HourType.increased)
+                .mapToInt(Day::totalHour)
+                .sum();
+
+        return  increasedNightHour + increasedDayHour;
+    }
+
 }
