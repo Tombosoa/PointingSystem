@@ -1,14 +1,12 @@
 package com.pointingSystem.calendar.hour;
 
 import com.pointingSystem.enums.HourType;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 @AllArgsConstructor
 @Getter
 @Setter
+@NoArgsConstructor
 @ToString
 public class Hour {
     private HourType type;
