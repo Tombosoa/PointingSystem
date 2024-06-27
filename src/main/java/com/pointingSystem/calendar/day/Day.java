@@ -17,4 +17,8 @@ public class Day {
     private Hour nightHour;
     private DayType dayType;
     private LocalDate date;
+
+    public int totalHour(){
+        return dayHour.getValue() + nightHour.getValue();
+    }
 }
