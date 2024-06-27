@@ -4,102 +4,56 @@ import com.pointingSystem.calendar.Calendar;
 import com.pointingSystem.calendar.day.Day;
 import com.pointingSystem.employee.Employee;
 import com.pointingSystem.enums.DayType;
-import com.pointingSystem.enums.HourType;
+import com.pointingSystem.enums.EmployeeType;
 
 import java.time.LocalDate;
 import java.util.List;
 
 public class SalaryCalculator {
 
-    public double calculateMonthlySalary(Employee employee, Calendar calendar, LocalDate date) {
-        int year = date.getYear();
-        int month = date.getMonthValue();
-        List<Day> daysInMonth = calendar.getDatesInMonth(year, month);
-
+    public static double calculateSalaryBetweenDates(LocalDate startDate, LocalDate endDate, Calendar calendar, Employee employee, int normalDaysWork){
+        List<Day> givenDays = calendar.getDatesBetween(startDate, endDate);
         double totalSalary = 0.0;
 
-        for (Day day : daysInMonth) {
-            boolean isNormalDay = (day.getDayHour().getType() == HourType.normal) && day.getDayType() == DayType.normal;
+        boolean needsBonus = employee.getType()!= EmployeeType.superior;
+
+        for (Day day : givenDays) {
+            boolean isNormalDay = day.getDayType() == DayType.normal;
+            boolean isWeekend = day.getDayType() == DayType.weekend;
+            boolean isHoliday = day.getDayType() == DayType.holiday;
+            boolean isNight = day.getNightHour().getValue() > 0;
+
             double dayValue = day.getDayHour().getValue();
             double nightValue = day.getNightHour().getValue();
 
-            switch (employee.getType()) {
-                case superior:
-                    // todo
-                    break;
-                case normal:
-                    if(isNormalDay){
-                        double weeklySalary = employee.getSalary().getGrossSalary() / (daysInMonth.size() * (dayValue+nightValue));
-                        double daySalary = dayValue * weeklySalary;
-                        double nightSalary = nightValue * weeklySalary;
-
-                        totalSalary += daySalary + nightSalary;
-                    }
-                    break;
-                case guard:
-                    double guardWeeklySalary = employee.getSalary().getGrossSalary() / (daysInMonth.size() * (dayValue+nightValue));
-                    double guardDaySalary = dayValue * guardWeeklySalary;
-                    double guardNightSalary = nightValue * guardWeeklySalary;
-
-                    totalSalary += guardDaySalary + guardNightSalary;
-                    break;
-                case driver:
-                    double driverWeeklySalary = employee.getSalary().getGrossSalary() / (daysInMonth.size() * (dayValue+nightValue));
-                    double driverDaySalary = dayValue * driverWeeklySalary;
-                    double driverNightSalary = nightValue * driverDaySalary;
-
-                    totalSalary += driverDaySalary + driverNightSalary;
-                    break;
-                default:
-                    break;
+            double salaryMultiplier = 1.0;
+            if (needsBonus) {
+                if (isNormalDay) {
+                    salaryMultiplier = 1.0;
+                } else if (isWeekend) {
+                    salaryMultiplier = 1.3;
+                } else if (isHoliday) {
+                    salaryMultiplier = 1.5;
+                }
             }
-        }
 
-        return totalSalary;
+            if (isNight) {
+                salaryMultiplier *= 1.3;
+            }
+
+            double normalWeeklySalary = employee.getSalary().getGrossSalary() / (normalDaysWork * (dayValue + nightValue));
+            double daySalary = normalWeeklySalary * dayValue * salaryMultiplier;
+            double nightSalary = normalWeeklySalary * nightValue * salaryMultiplier;
+
+            totalSalary += daySalary + nightSalary;
+        }
+        return Math.round(totalSalary * 100.0) / 100.0;
     }
 
-    public static double calculateWeeklySalary(Employee employee, Calendar calendar, int weekNumber, int year) {
-        List<Day> daysInWeek = calendar.displayWeek(weekNumber, year);
-
-        double totalSalary = 0.0;
-
-        for (Day day : daysInWeek) {
-            boolean isNormalDay = (day.getDayHour().getType() == HourType.normal) && day.getDayType() == DayType.normal;
-            boolean isSundayAdditional = (day.getDayHour().getType() == HourType.additional) && day.getDayType() == DayType.normal;
-            double dayValue = day.getDayHour().getValue();
-            double nightValue = day.getNightHour().getValue();
-
-            switch (employee.getType()) {
-                case superior:
-                    //todo
-                    break;
-                case normal:
-                    if(isNormalDay){
-                        double normalWeeklySalary = employee.getSalary().getGrossSalary() / (daysInWeek.size() * (dayValue+nightValue));
-                        double daySalary = normalWeeklySalary * dayValue;
-                        double nightSalary = normalWeeklySalary * nightValue;
-
-                        totalSalary += daySalary + nightSalary;
-                    }
-                    break;
-                case guard:
-                    double guardWeeklySalary = employee.getSalary().getGrossSalary() / (daysInWeek.size() * (dayValue+nightValue));
-                    double guardDaySalary = dayValue * guardWeeklySalary;
-                    double guardNightSalary = nightValue * guardWeeklySalary;
-
-                    totalSalary += guardDaySalary + guardNightSalary;
-                    break;
-                case driver:
-                    double driverWeeklySalary = employee.getSalary().getGrossSalary() / (daysInWeek.size() * (dayValue+nightValue));
-                    double driverDaySalary = dayValue * driverWeeklySalary;
-                    double driverNightSalary = nightValue * driverDaySalary;
-
-                    totalSalary += driverDaySalary + driverNightSalary;
-                    break;
-                default:
-                    break;
-            }
-        }
-        return totalSalary;
+    public static int calculateTotalHour(LocalDate startDate, LocalDate endDate, Calendar calendar, Employee employee){
+        List<Day> givenDays = calendar.getDatesBetween(startDate, endDate);
+        return givenDays.stream()
+                .mapToInt(Day::totalHour)
+                .sum();
     }
 }
